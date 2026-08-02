@@ -90,26 +90,4 @@ LoginScreen
 
 ---
 
-## Para conectar el backend Node.js (cuando esté listo)
 
-En `lib/providers/app_provider.dart`, reemplaza los métodos `login()`, `cargarTutores()`, etc.
-con llamadas HTTP usando el paquete `http` o `dio`:
-
-```dart
-// pubspec.yaml: agrega  http: ^1.2.0
-
-import 'package:http/http.dart' as http;
-import 'dart:convert';
-
-const _base = 'http://10.0.2.2:3000/api'; // 10.0.2.2 = localhost en emulador Android
-
-Future<void> cargarTutores() async {
-  final res = await http.get(
-    Uri.parse('$_base/tutores'),
-    headers: {'Authorization': 'Bearer $token'},
-  );
-  final data = jsonDecode(res.body);
-  _tutores = (data['tutores'] as List).map((j) => Tutor.fromJson(j)).toList();
-  notifyListeners();
-}
-```
