@@ -73,6 +73,7 @@ class Reserva {
   final double precioTotal;
   final String tutorNombre;
   final String nota;
+  Calificacion? calificacion;
 
   Reserva({
     required this.id,
@@ -142,4 +143,20 @@ class DemoData {
     Reserva(id: 'r1', materia: 'Cálculo Diferencial', fecha: DateTime(2025, 4, 26), hora: '10:00', duracionMinutos: 60, estado: EstadoReserva.completada, precioTotal: 44.0,  tutorNombre: 'Rafael Gómez'),
     Reserva(id: 'r2', materia: 'Python para Data',    fecha: DateTime(2025, 4, 28), hora: '10:00', duracionMinutos: 90, estado: EstadoReserva.confirmada, precioTotal: 57.75, tutorNombre: 'María López', nota: 'Quiero aprender Pandas'),
   ];
+}
+// ─── Modelo: Calificación ─────────────────────────────────────────────────
+class Calificacion {
+  final String reservaId;
+  final String tutorId;
+  final int estrellas;       // 1 a 5
+  final String comentario;
+  final DateTime creadoEn;
+
+  const Calificacion({
+    required this.reservaId,
+    required this.tutorId,
+    required this.estrellas,
+    required this.comentario,
+    required this.creadoEn,
+  });
 }

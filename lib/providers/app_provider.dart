@@ -149,4 +149,19 @@ class AppProvider extends ChangeNotifier {
     _listaReservas = [];
     notifyListeners();
   }
+  void calificarTutor({
+    required String reservaId,
+    required int estrellas,
+    required String comentario,
+  }) {
+    final reserva = _listaReservas.firstWhere((r) => r.id == reservaId);
+    reserva.calificacion = Calificacion(
+      reservaId:   reservaId,
+      tutorId:     reservaId, // en demo usamos reservaId como referencia
+      estrellas:   estrellas,
+      comentario:  comentario,
+      creadoEn:    DateTime.now(),
+    );
+    notifyListeners();
+  }
 }

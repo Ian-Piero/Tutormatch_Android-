@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import '../models/models.dart';
 import '../providers/app_provider.dart';
 import '../theme/app_theme.dart';
-
+import '../widgets/dialog_calificacion.dart';
 class ReservasTab extends StatelessWidget {
   const ReservasTab({super.key});
 
@@ -164,7 +164,41 @@ class _ReservaCard extends StatelessWidget {
               ],
             ),
           ),
-
+          // Mostrar calificación si ya fue calificada
+          if (reserva.calificacion != null) ...[
+            const SizedBox(height: 10),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              decoration: BoxDecoration(
+                color: AppTheme.yellowL,
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: const Color(0xFFFFE082)),
+              ),
+              child: Row(
+                children: [
+                  Text(
+                    '★' * reserva.calificacion!.estrellas,
+                    style: const TextStyle(
+                      color: Color(0xFFF59E0B), fontSize: 14,
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      reserva.calificacion!.comentario.isNotEmpty
+                          ? reserva.calificacion!.comentario
+                          : 'Sin comentario',
+                      style: GoogleFonts.nunito(
+                        fontSize: 12, color: AppTheme.yellow,
+                        fontWeight: FontWeight.w600,
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
           // Nota
           if (reserva.nota.isNotEmpty) ...[
             const SizedBox(height: 10),
@@ -220,15 +254,31 @@ class _ReservaCard extends StatelessWidget {
     return botones;
   }
 
-  void _confirmarCambio(BuildContext ctx, AppProvider prov, String id, EstadoReserva estado, String label) {
-    prov.cambiarEstado(id, estado);
+  void _confirmarCambio(
+      BuildContext ctx,
+      AppProvider prov,
+      String id,
+      EstadoReserva estado,
+      String label,
+      ) async {
+    prov.cambiarEstadoLocal(id, estado);
+
     ScaffoldMessenger.of(ctx).showSnackBar(
       SnackBar(
         content: Text('Reserva marcada como "$label"'),
-        backgroundColor: estado == EstadoReserva.cancelada ? AppTheme.red : AppTheme.green,
+        backgroundColor:
+        estado == EstadoReserva.cancelada ? AppTheme.red : AppTheme.green,
         duration: const Duration(seconds: 2),
       ),
     );
+
+    // Si se marcó como completada, mostrar dialog de calificación
+    if (estado == EstadoReserva.completada) {
+      await Future.delayed(const Duration(milliseconds: 600));
+      if (ctx.mounted) {
+        await mostrarDialogCalificacion(ctx, id, reserva.tutorNombre);
+      }
+    }
   }
 }
 
